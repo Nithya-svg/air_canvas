@@ -3,9 +3,7 @@ import numpy as np
 import mediapipe as mp
 import time
 
-# ===============================
-# MediaPipe setup
-# ===============================
+
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(
     max_num_hands=1,
@@ -14,22 +12,16 @@ hands = mp_hands.Hands(
 )
 mp_draw = mp.solutions.drawing_utils
 
-# ===============================
-# Webcam
-# ===============================
+
 WIDTH, HEIGHT = 640, 480
 cap = cv2.VideoCapture(0)
 cap.set(3, WIDTH)
 cap.set(4, HEIGHT)
 
-# ===============================
-# Canvas
-# ===============================
+
 canvas = np.zeros((HEIGHT, WIDTH, 3), dtype=np.uint8)
 
-# ===============================
-# COLORS (NAME : BGR)
-# ===============================
+
 colors = [
     ("BLUE",   (255, 0, 0)),
     ("GREEN",  (0, 255, 0)),
@@ -43,21 +35,15 @@ colors = [
 
 draw_color = colors[0][1]
 
-# ===============================
-# Drawing settings
-# ===============================
+
 brush_thickness = 6
 eraser_thickness = 60
 prev_x, prev_y = 0, 0
 
-# ===============================
-# FPS
-# ===============================
+
 p_time = 0
 
-# ===============================
-# Draw SIDE color palette
-# ===============================
+
 def draw_side_palette(img):
     block_height = HEIGHT // len(colors)
     for i, (name, col) in enumerate(colors):
@@ -75,9 +61,7 @@ def draw_side_palette(img):
             2
         )
 
-# ===============================
-# Finger detection
-# ===============================
+
 def fingers_up(lm):
     tips = [8, 12, 16, 20]
     fingers = []
@@ -85,9 +69,7 @@ def fingers_up(lm):
         fingers.append(lm[tip].y < lm[tip - 2].y)
     return fingers
 
-# ===============================
-# Main loop
-# ===============================
+
 while True:
     success, frame = cap.read()
     if not success:
@@ -145,9 +127,7 @@ while True:
             mp_draw.draw_landmarks(frame, hand_landmarks,
                                    mp_hands.HAND_CONNECTIONS)
 
-    # ===============================
-    # Merge canvas with frame
-    # ===============================
+    
     gray = cv2.cvtColor(canvas, cv2.COLOR_BGR2GRAY)
     _, inv = cv2.threshold(gray, 20, 255, cv2.THRESH_BINARY_INV)
     inv = cv2.cvtColor(inv, cv2.COLOR_GRAY2BGR)
@@ -179,3 +159,4 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+
